@@ -1,31 +1,63 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
     public static void main(String[] args) {
         ProductBasket basket = new ProductBasket();
-        Product bread = new Product("Хлеб", 50);
-        basket.add(bread);
-        Product milk = new Product("Молоко", 80);
-        Product cheese = new Product("Сыр", 200);
-        Product butter = new Product("Масло", 150);
-        Product eggs = new Product("Яйца", 120);
-        basket.add(milk);
-        basket.add(cheese);
-        basket.add(butter);
-        basket.add(eggs);
-        Product apple = new Product("Яблоки", 100);
-        basket.add(apple);
-        basket.print();
-        System.out.println("Общая стоимость: " + basket.getTotalPrice());
-        System.out.println("Есть хлеб? " + basket.contains("Хлеб"));
-        System.out.println("Есть яблоки? " + basket.contains("Яблоки"));
-        basket.clear();
-        basket.print();
-        System.out.println("Общая стоимость: " + basket.getTotalPrice());
-        System.out.println("Есть хлеб? " + basket.contains("Хлеб"));
+
+        basket.addToBasket(new Product("egg") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new SimpleProduct("egg", 100));
+
+
+        basket.addToBasket(new Product("milk") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new Product("cookie") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new Product("salt") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new Product("sugar") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new SimpleProduct("milk", 80));
+        basket.addToBasket(new DiscountedProduct("cookie", 150, 10));
+        basket.addToBasket(new FixPriceProduct("vegetable cutter"));
+        basket.addToBasket(new SimpleProduct("sugar", 60));
+
+
+        basket.addToBasket(new Product("sugar") {
+            @Override
+            public boolean isSpecial() {
+                return false;
+            }
+        });
+        basket.addToBasket(new SimpleProduct("sugar", 60));
+
+
+        basket.printProductsOfBasket();
     }
 }
-
