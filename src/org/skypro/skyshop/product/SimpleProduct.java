@@ -1,11 +1,15 @@
 package org.skypro.skyshop.product;
 
 public class SimpleProduct extends Product {
-    private int price;
+    private final int price;
 
     public SimpleProduct(String name, int price) {
         super(name);
-        this.price = price;
+        if (price > 0) {
+            this.price = price;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
