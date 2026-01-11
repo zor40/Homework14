@@ -22,7 +22,7 @@ public class App {
             basket.printProductsOfBasket();
             System.out.println(basket.removeFromBasketByName("chicken"));
             basket.printProductsOfBasket();
-            SearchEngine searchEngine = new SearchEngine();
+            SearchEngine searchEngine = new SearchEngine(20);
             searchEngine.add(new SimpleProduct("milk", 80));
             searchEngine.add(new DiscountedProduct("cookie", 150, 10));
             searchEngine.add(new FixPriceProduct("vegetable cutter"));
@@ -31,8 +31,10 @@ public class App {
             searchEngine.add(new SimpleProduct("sugar", 60));
             searchEngine.add(new Article("Ночник", "Ночник для новорожденных с генератором белого шума"));
             searchEngine.add(new Article("Видеоняня", "Видеоняня с монитором, беспроводная 1280 * 720 HD"));
-            Searchable result2 = searchEngine.search2("coo");
-            System.out.println(result2);
+            Searchable[] result2 = searchEngine.search("coo");
+            if (result2[0] != null) {
+                System.out.println(result2[0].getStringRepresentation());
+            }
         } catch (IllegalArgumentException e) {
             System.out.println("Введены не корректные данные!");
         }

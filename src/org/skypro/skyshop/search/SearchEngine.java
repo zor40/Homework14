@@ -1,50 +1,36 @@
 package org.skypro.skyshop.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 public class SearchEngine {
+    private final Searchable[] items;
 
-    private Map<String, Searchable> searchableMap = new TreeMap<>();
-    private List<Searchable> searchables = new ArrayList<>();
-
-    public void add(Searchable searchable) {
-        searchables.add(searchable);
+    public SearchEngine(int capacity) {
+        this.items = new Searchable[capacity];
     }
 
-    public Map<String, Searchable> search(String query) {
-        for (Searchable searchable : searchables) {
-            if (searchable.getSearchTerm().contains(query)) {
-                searchableMap.put(searchable.getName(), searchable);
+    public void add(Searchable item) {
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] == null) {
+                items[i] = item;
+                return;
             }
         }
-        return searchableMap;
     }
 
-    public Searchable search2(String substring) {
-        int count = 0;
-        Searchable result = null;
-        for (Searchable a : searchables) {
-            String str = a.getSearchTerm();
-            int quantity = 0;
-            int index = 0;
-            int indexString = str.indexOf(substring, index);
-            while (indexString != -1) {
-                quantity++;
-                index = indexString + substring.length();
-                indexString = str.indexOf(substring, index);
+    public Searchable[] search(String query) {
+        Searchable[] results = new Searchable[5];
+        int resultCount = 0;
+
+        for (int i = 0; i < items.length && resultCount < 5; i++) {
+            Searchable current = items[i];
+            if (current == null) {
+                continue;
             }
-            if (quantity > count) {
-                count = quantity;
-                result = a;
-            }
-            if (result == null) {
+            String term = current.getSearchTerm();
+            if (term != null && term.contains(query)) {
+                results[resultCount] = current;
+                resultCount++;
             }
         }
-        return result;
+        return results;
     }
 }
-
-
