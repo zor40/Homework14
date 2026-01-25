@@ -5,11 +5,43 @@ import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 public class App {
     public static void main(String[] args) {
+
+        try {
+            new SimpleProduct("   ", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            new SimpleProduct("egg", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            new DiscountedProduct("cookie", -150, 10);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            new DiscountedProduct("cookie", 150, 150);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            new Article("", "Текст статьи");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
         try {
             ProductBasket basket = new ProductBasket();
             basket.addToBasket(new SimpleProduct("egg", 100));
@@ -34,6 +66,20 @@ public class App {
             Searchable[] result2 = searchEngine.search("coo");
             if (result2[0] != null) {
                 System.out.println(result2[0].getStringRepresentation());
+            }
+            try {
+                Searchable best = searchEngine.findBestMatch("sugar");
+                System.out.println("Лучший результат для 'sugar': "
+                        + best.getStringRepresentation());
+            } catch (BestResultNotFound e) {
+                System.out.println(e.getMessage());
+            }
+            try {
+                Searchable best = searchEngine.findBestMatch("abcdxyz");
+                System.out.println("Лучший результат для 'abcdxyz': "
+                        + best.getStringRepresentation());
+            } catch (BestResultNotFound e) {
+                System.out.println(e.getMessage());
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Введены не корректные данные!");
