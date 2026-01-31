@@ -1,65 +1,72 @@
 package org.skypro.skyshop.basket;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.skypro.skyshop.product.Product;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ProductBasket {
-    private Map<String, List<Product>> productBasketMap = new HashMap<>();
-    public void addToBasket(Product product) {
-        productBasketMap.computeIfAbsent(product.getName(), k -> new ArrayList<Product>()).add(product);
+    private final List<Product> products = new LinkedList<>();
+
+    public void add(Product product) {
+        products.add(product);
+    }
+
+    public List<Product> removeByName(String name) {
+        List<Product> removed = new LinkedList<>();
+        Iterator<Product> iterator = products.iterator();  // ← Iterator!
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (product.getName().equals(name)) {
+                removed.add(product);
+                iterator.remove();
+            }
+        }
+        return removed;
+    }
+
+    public void printBasket() {
+        if (products.isEmpty()) {
+            System.out.println("в корзине пусто");
+            return;
+        }
+
+        for (Product product : products) {
+            System.out.println(product);
+        }
+        System.out.println("Итого: " + getSumOfProducts());
+        System.out.println("Специальных товаров: " + getCountSpecialProduct());
     }
 
     public int getSumOfProducts() {
         int sum = 0;
-        for (List<Product> productList : productBasketMap.values()) {
-            for (Product product : productList) {
-                sum += product.getPrice();
-            }
+        for (Product product : products) {
+            sum += product.getPrice();
         }
         return sum;
     }
 
-    public void printProductsOfBasket() {
-        for (List<Product> productList : productBasketMap.values()) {
-            for (Product product : productList) {
-                System.out.println(product);
-            }
-        }
-        if (getSumOfProducts() != 0) {
-            System.out.println("Итого: " + getSumOfProducts());
-        } else {
-            System.out.println("в корзине пусто");
-        }
-        System.out.println("Специальных товаров: " + getCountSpecialProduct());
-    }
-
-    public boolean checkProductInBasket(String nameOfProduct) {
-        return productBasketMap.containsKey(nameOfProduct);
-    }
-
-    public void cleanBasket() {
-        for (String k : productBasketMap.keySet()) {
-            productBasketMap.remove(k);
-        }
-    }
-
     public int getCountSpecialProduct() {
         int count = 0;
-        for (List<Product> productList : productBasketMap.values()) {
-            for (Product product : productList) {
-                if (product.isSpecial()) {
-                    count++;
-                }
+        for (Product product : products) {
+            if (product.isSpecial()) {
+                count++;
             }
         }
         return count;
     }
 
-    public List<Product> removeFromBasketByName(String name) {
-        return productBasketMap.remove(name);
+    public void cleanBasket() {
+        products.clear();
+    }
+
+    public boolean checkProductInBasket(String nameOfProduct) {
+        for (Product product : products) {
+            if (product.getName().equals(nameOfProduct)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,34 +1,26 @@
 package org.skypro.skyshop.search;
 
-public class SearchEngine {
-    private final Searchable[] items;
+import java.util.LinkedList;
+import java.util.List;
 
-    public SearchEngine(int capacity) {
-        this.items = new Searchable[capacity];
+import org.skypro.skyshop.search.Searchable;
+
+public class SearchEngine {
+    private final List<Searchable> items = new LinkedList<>();  // ← LinkedList!
+
+    public SearchEngine() {
     }
 
     public void add(Searchable item) {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] == null) {
-                items[i] = item;
-                return;
-            }
-        }
+        items.add(item);
     }
 
-    public Searchable[] search(String query) {
-        Searchable[] results = new Searchable[5];
-        int resultCount = 0;
-
-        for (int i = 0; i < items.length && resultCount < 5; i++) {
-            Searchable current = items[i];
-            if (current == null) {
-                continue;
-            }
-            String term = current.getSearchTerm();
+    public List<Searchable> search(String query) {
+        List<Searchable> results = new LinkedList<>();
+        for (Searchable item : items) {
+            String term = item.getSearchTerm();
             if (term != null && term.contains(query)) {
-                results[resultCount] = current;
-                resultCount++;
+                results.add(item);
             }
         }
         return results;
@@ -47,7 +39,7 @@ public class SearchEngine {
                 continue;
             }
             String term = item.getSearchTerm();
-            if (term == null || term.isEmpty()) {
+            if (term != null && term.isEmpty()) {
                 continue;
             }
 
