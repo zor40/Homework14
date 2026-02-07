@@ -4,13 +4,12 @@ import org.skypro.skyshop.article.Article;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
-import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
-import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
@@ -19,27 +18,25 @@ public class App {
         try {
             ProductBasket basket = new ProductBasket();
 
-            basket.add(new SimpleProduct("egg", 100));
-            basket.add(new SimpleProduct("milk", 80));
-            basket.add(new DiscountedProduct("cookie", 150, 10));
-            basket.add(new SimpleProduct("milk", 80));  // Дубликат milk
-            basket.add(new DiscountedProduct("cookie", 150, 10));  // Дубликат cookie
+            basket.addToBasket(new SimpleProduct("egg", 100));
+            basket.addToBasket(new SimpleProduct("milk", 80));
+            basket.addToBasket(new DiscountedProduct("cookie", 150, 10));
+            basket.addToBasket(new SimpleProduct("milk", 80));  // Дубликат milk
+            basket.addToBasket(new DiscountedProduct("cookie", 150, 10));  // Дубликат cookie
 
-            basket.printBasket();
+            basket.printProductsOfBasket();
 
             System.out.println("\n=== УДАЛЕНИЕ MILK ===");
-            List<Product> removedMilk = basket.removeByName("milk");
-            System.out.println("Удалено milk: " + removedMilk);
-            basket.printBasket();
+            boolean removedMilk = basket.removeFromBasketByName("milk");
+            System.out.println("Удалено milk? " + removedMilk);
+            basket.printProductsOfBasket();
 
             System.out.println("\n=== УДАЛЕНИЕ CHICKEN (НЕТ) ===");
-            List<Product> removedChicken = basket.removeByName("chicken");
-            if (removedChicken.isEmpty()) {
-                System.out.println("Список пуст");
-            }
-            basket.printBasket();
+            boolean removedChicken = basket.removeFromBasketByName("chicken");
+            System.out.println("Удалено chicken? " + removedChicken);
+            basket.printProductsOfBasket();
 
-            SearchEngine searchEngine = new SearchEngine();  // Без capacity!
+            SearchEngine searchEngine = new SearchEngine();
             searchEngine.add(new SimpleProduct("milk", 80));
             searchEngine.add(new DiscountedProduct("cookie", 150, 10));
             searchEngine.add(new FixPriceProduct("vegetable cutter"));
@@ -49,13 +46,13 @@ public class App {
             searchEngine.add(new Article("Ночник", "Ночник для новорожденных с генератором белого шума"));
             searchEngine.add(new Article("Видеоняня", "Видеоняня с монитором, беспроводная 1280 * 720 HD"));
 
-            List<Searchable> result2 = searchEngine.search("coo");
             System.out.println("\nПоиск 'coo':");
-            for (Searchable s : result2) {
+            Map<String, Searchable> result2 = searchEngine.search("coo");
+            for (Searchable s : result2.values()) {
                 System.out.println(s.getStringRepresentation());
             }
 
-            List<Searchable> resultSugar = searchEngine.search("sugar");
+            Map<String, Searchable> resultSugar = searchEngine.search("sugar");
             System.out.println("\nПоиск 'sugar' (все): " + resultSugar.size() + " результатов");
 
             try {
