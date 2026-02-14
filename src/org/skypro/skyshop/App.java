@@ -9,6 +9,9 @@ import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
+import java.util.List;
+import java.util.TreeSet;
+
 import java.util.Map;
 
 public class App {
@@ -47,13 +50,17 @@ public class App {
             searchEngine.add(new Article("Видеоняня", "Видеоняня с монитором, беспроводная 1280 * 720 HD"));
 
             System.out.println("\nПоиск 'coo':");
-            Map<String, Searchable> result2 = searchEngine.search("coo");
-            for (Searchable s : result2.values()) {
+            TreeSet<Searchable> result2 = searchEngine.search("coo");
+            for (Searchable s : result2) {
                 System.out.println(s.getStringRepresentation());
             }
 
-            Map<String, Searchable> resultSugar = searchEngine.search("sugar");
-            System.out.println("\nПоиск 'sugar' (все): " + resultSugar.size() + " результатов");
+            System.out.println("\nПоиск 'sugar':");
+            TreeSet<Searchable> resultSugar = searchEngine.search("sugar");
+            System.out.println("Результатов: " + resultSugar.size());
+            for (Searchable s : resultSugar) {
+                System.out.println(s.getStringRepresentation());
+            }
 
             try {
                 Searchable best = searchEngine.findBestMatch("sugar");
