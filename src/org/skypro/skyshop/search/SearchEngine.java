@@ -1,17 +1,14 @@
 package org.skypro.skyshop.search;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Comparator;
 import java.util.TreeSet;
-
-import org.skypro.skyshop.search.Searchable;
-
 
 public class SearchEngine {
     private final Set<Searchable> items = new HashSet<>();
+
+    private final java.util.Comparator<Searchable> comparator =
+            java.util.Comparator.comparing(Searchable::getSearchTerm);
 
     public SearchEngine() {
     }
@@ -21,13 +18,16 @@ public class SearchEngine {
     }
 
     public TreeSet<Searchable> search(String query) {
-        TreeSet<Searchable> results = new TreeSet<>(new SearchableComparator());
-        for (Searchable item : items) {
-            if (item.getSearchTerm() != null && item.getSearchTerm().contains(query)) {
-                results.add(item);
-            }
-        }
-        return results;
+        return items.stream()
+                .filter(s -> {
+                    String term = s.getSearchTerm();
+                    return term != null
+                            && !term.isEmpty()
+                            && term.toLowerCase().contains(query.toLowerCase());
+                })
+                .collect(java.util.stream.Collectors.toCollection(
+                        () -> new java.util.TreeSet<>(comparator)
+                ));
     }
 
     public Searchable findBestMatch(String search) throws BestResultNotFound {

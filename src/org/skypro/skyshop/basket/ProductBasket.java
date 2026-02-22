@@ -26,34 +26,30 @@ public class ProductBasket {
             return;
         }
 
-        int totalPrice = 0;
-        int specialCount = 0;
+        int totalPrice = products.values().stream()
+                .flatMap(java.util.Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
 
-        for (List<Product> list : products.values()) {
-
-            for (Product p : list) {
-                System.out.println(p.toString());
-                totalPrice += p.getPrice();
-                if (p.isSpecial()) {
-                    specialCount++;
-                }
-            }
-        }
+        products.values().stream()
+                .flatMap(java.util.Collection::stream)
+                .forEach(p -> System.out.println(p.toString()));
 
         System.out.println("Итого: " + totalPrice);
-        System.out.println("Специальных товаров: " + specialCount);
+        System.out.println("Специальных товаров: " + getSpecialCount());
     }
 
+    // Если нужен публичный метод:
     public int getCountSpecialProduct() {
-        int count = 0;
-        for (List<Product> list : products.values()) {
-            for (Product p : list) {
-                if (p.isSpecial()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+        return (int) getSpecialCount();
+    }
+
+    // Метод по требованию ДЗ
+    private long getSpecialCount() {
+        return products.values().stream()
+                .flatMap(java.util.Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     public void cleanBasket() {
